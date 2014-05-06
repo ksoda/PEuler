@@ -3,7 +3,7 @@ primeFactors n = factors n sieveOfEratosthenes
   where
     factors n (p:ps)
       | p > n = []
-      | n `mod` p == 0 = p : factors (n `div` p) ps -- Vital
+      | n `mod` p == 0 = p : factors (n `div` p) (p:ps) -- Vital
       | otherwise = factors n ps
 
 sieveOfEratosthenes :: [Integer]
