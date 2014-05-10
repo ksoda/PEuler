@@ -1,9 +1,16 @@
+module Primes
+(primesToQ
+,primesToG
+)where
+
 import Data.Array.Unboxed
 
-primesTo m = eratos [2..m]  where
-   eratos []     = []
-   eratos (p:xs) = p : eratos (xs `minus` [p, p+p..m])
+sieveOfEratosthenes :: [Integer]
+sieveOfEratosthenes = sieve [2..]
+  where
+    sieve (p:xs) = p : sieve [x|x <- xs, x `mod` p /= 0]
 
+-- p < m**0.5 < q, m = pq, p < q
 primesToQ m = eratos [2..m]  where
    eratos []     = []
    eratos (p:xs) = p : eratos (xs `minus` [p*p, p*p+p..m])
@@ -21,6 +28,7 @@ primesToA m = sieve 3 (array (3,m) [(i,odd i) | i<-[3..m]] :: UArray Int Bool)
       | otherwise = sieve (p+2) a
 
 -- ordered lists, difference and union
+-- O(|x U y|)
 minus (x:xs) (y:ys) = case (compare x y) of
            LT -> x : minus  xs  (y:ys)
            EQ ->     minus  xs     ys
