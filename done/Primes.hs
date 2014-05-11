@@ -1,11 +1,11 @@
 module Primes
-(primesToQ
+(sieveOfEratosthenes
 ,primesToG
+,primeFactors
 )where
 
 import Data.Array.Unboxed
 
-sieveOfEratosthenes :: [Integer]
 sieveOfEratosthenes = sieve [2..]
   where
     sieve (p:xs) = p : sieve [x|x <- xs, x `mod` p /= 0]
@@ -40,3 +40,11 @@ union (x:xs) (y:ys) = case (compare x y) of
            GT -> y : union (x:xs)  ys
 union  xs     []    = xs
 union  []     ys    = ys
+
+
+primeFactors n = factors n $ primesToG n
+  where
+    factors n (p:ps)
+      | p > n = []
+      | n `mod` p == 0 = p : factors (n `div` p) (p:ps) -- Vital
+      | otherwise = factors n ps
