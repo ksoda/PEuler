@@ -4,6 +4,7 @@ module PEuler
 ,prettyPrint
 ,eachCons
 ,combination
+,findKey
 ,triangleNumber
 ,fibonacci
 ,sieveOfEratosthenes
