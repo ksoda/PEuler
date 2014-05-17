@@ -1,7 +1,8 @@
 module PEuler
 (primesToQ
-,primesToG
+,primesPE1
 ,prettyPrint
+,rotate
 ,eachCons
 ,combination
 ,findKey
@@ -22,6 +23,18 @@ primesToG m = 2 : sieve [3,5..m]  where
        | p*p > m   = p : xs
        | otherwise = p : sieve (xs `minus` [p*p, p*p+2*p..])
 
+primesPE1 = 2 : sieve [3..] primesPE1
+  where
+    sieve xs (p:ps) | q <- p*p , (h,t) <- span (< q) xs =
+                   h ++ sieve (t `minus` [q, q+p..]) ps
+
+primesPE = 2 : primes'
+  where
+    primes' = sieve [3,5..] 9 primes'
+    sieve (x:xs) q ps@ ~(p:t)
+      | x < q     = x : sieve xs q ps
+      | otherwise =     sieve (xs `minus` [q, q+2*p..]) (head t^2) t
+
 minus :: Ord a => [a] -> [a] -> [a]
 minus (x:xs) (y:ys) = case (compare x y) of
            LT -> x : minus  xs  (y:ys)
@@ -31,6 +44,10 @@ minus  xs     _     = xs
 
 prettyPrint :: Show a => [a] -> IO()
 prettyPrint = mapM_ print
+
+rotate :: [a] -> [a]
+rotate [] = []
+rotate (x:xs) = xs ++ [x]
 
 eachCons :: Int -> [a] -> [[a]]
 eachCons n xs
