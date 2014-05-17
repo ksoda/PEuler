@@ -1,5 +1,4 @@
-prettyPrint :: Show a => [a] -> IO()
-prettyPrint = mapM_ print
+import PEuler(prettyPrint)
 
 readNums :: String -> [Integer]
 readNums xs =  map (read::String->Integer) $ lines xs

@@ -1,11 +1,8 @@
 import Data.List
-
-prettyPrint :: Show a => [a] -> IO()
-prettyPrint = mapM_ print
+import PEuler(prettyPrint)
 
 readGrid :: String -> [[Int]]
 readGrid xs = map (map (read::String->Int) . words) $ lines xs
-
 
 fourAdjacencies :: Eq a => (Int, Int) -> [[a]] -> [[a]]
 fourAdjacencies (x, y) mtx =
@@ -23,11 +20,8 @@ fourAdjacencies (x, y) mtx =
         |Nothing `elem` xs = []
         |otherwise = map (\(Just a)-> a) xs
 
-
 solve mtx =
   maximum $ map product $ concatMap (\pair-> fourAdjacencies pair mtx) [(x, y) |x <- [1..20], y <- [1..20]]
-
-
 
 main = do
   contents <- getContents

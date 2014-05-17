@@ -1,19 +1,60 @@
 module PEuler
-(eachCons
+(primesToQ
+,primesToG
+,prettyPrint
+,eachCons
+,triangleNumber
+,fibonacci
+,sieveOfEratosthenes
 ,primeFactors
+,numDivisors
 ) where
+import Data.List(group)
 
-import Primes
+primesToQ m = eratos [2..m]  where
+   eratos []     = []
+   eratos (p:xs) = p : eratos (xs `minus` [p*p, p*p+p..m])
+
+primesToG m = 2 : sieve [3,5..m]  where
+    sieve (p:xs)
+       | p*p > m   = p : xs
+       | otherwise = p : sieve (xs `minus` [p*p, p*p+2*p..])
+
+minus (x:xs) (y:ys) = case (compare x y) of
+           LT -> x : minus  xs  (y:ys)
+           EQ ->     minus  xs     ys
+           GT ->     minus (x:xs)  ys
+minus  xs     _     = xs
+
+prettyPrint :: Show a => [a] -> IO()
+prettyPrint = mapM_ print
 
 eachCons :: Int -> [a] -> [[a]]
 eachCons n xs
   |n - 1 == length xs = []
   |otherwise = take n xs : eachCons n (tail xs)
 
-primeFactors :: (Num a) => Integer -> [a]
+triangleNumber :: (Integral a) => a -> a
+triangleNumber n = n * (n + 1) `div` 2
+
+fibonacci :: [Integer]
+fibonacci = 1 : 2 : zipWith (+) fibonacci (tail fibonacci)
+
+sieveOfEratosthenes :: [Integer]
+sieveOfEratosthenes = sieve [2..]
+  where
+    sieve (p:xs) = p : sieve [x|x <- xs, x `mod` p /= 0]
+
+primeFactors :: Integer -> [Integer]
 primeFactors n = factors n sieveOfEratosthenes
   where
     factors n (p:ps)
       | p > n = []
       | n `mod` p == 0 = p : factors (n `div` p) (p:ps) -- Vital
       | otherwise = factors n ps
+
+numDivisors x | null factors = 1
+              | otherwise = (product . (map $ (+1).length) . group) factors
+                where factors = primeFactors x
+
+main = print $ take 10 fibonacci

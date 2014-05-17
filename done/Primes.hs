@@ -1,31 +1,23 @@
 module Primes
-(sieveOfEratosthenes
-,primesToG
-,primeFactors
+(primesToG
 )where
-
-import Data.Array.Unboxed
-
-sieveOfEratosthenes = sieve [2..]
-  where
-    sieve (p:xs) = p : sieve [x|x <- xs, x `mod` p /= 0]
-
--- p < m**0.5 < q, m = pq, p < q
-primesToQ m = eratos [2..m]  where
-   eratos []     = []
-   eratos (p:xs) = p : eratos (xs `minus` [p*p, p*p+p..m])
 
 primesToG m = 2 : sieve [3,5..m]  where
     sieve (p:xs)
        | p*p > m   = p : xs
        | otherwise = p : sieve (xs `minus` [p*p, p*p+2*p..])
 
-primesToA m = sieve 3 (array (3,m) [(i,odd i) | i<-[3..m]] :: UArray Int Bool)
+primesPE1 = 2 : sieve [3..] primesPE1
   where
-    sieve p a
-      | p*p > m   = 2 : [i | (i,True) <- assocs a]
-      | a!p       = sieve (p+2) $ a//[(i,False) | i <- [p*p, p*p+2*p..m]]
-      | otherwise = sieve (p+2) a
+    sieve xs (p:ps) | q <- p*p , (h,t) <- span (< q) xs =
+                   h ++ sieve (t `minus` [q, q+p..]) ps
+
+primesPE = 2 : primes'
+  where
+    primes' = sieve [3,5..] 9 primes'
+    sieve (x:xs) q ps@ ~(p:t)
+      | x < q     = x : sieve xs q ps
+      | otherwise =     sieve (xs `minus` [q, q+2*p..]) (head t^2) t
 
 -- ordered lists, difference and union
 -- O(|x U y|)
@@ -41,10 +33,3 @@ union (x:xs) (y:ys) = case (compare x y) of
 union  xs     []    = xs
 union  []     ys    = ys
 
-
-primeFactors n = factors n $ primesToG n
-  where
-    factors n (p:ps)
-      | p > n = []
-      | n `mod` p == 0 = p : factors (n `div` p) (p:ps) -- Vital
-      | otherwise = factors n ps

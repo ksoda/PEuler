@@ -1,4 +1,4 @@
-import Primes
-result = sum $ primesToG $ 2*10^6
+import PEuler(primesToQ)
+result = sum $ primesToQ $ 2*10^6
 
 main = putStrLn $ show result
