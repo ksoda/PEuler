@@ -1,6 +1,7 @@
 module PEuler
 (primesToQ
 ,primesPE1
+,primesPE
 ,prettyPrint
 ,rotate
 ,eachCons
