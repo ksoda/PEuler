@@ -1,4 +1,5 @@
-import PEuler(primesPE1, rotate)
+import PEuler(rotate)
+import Prime(primesPE1)
 import Data.Char
 
 primes = takeWhile (<10^6) primesPE1

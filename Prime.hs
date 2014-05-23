@@ -1,17 +1,27 @@
-module Primes
-(primesToG
-)where
+module Prime
+(sieveOfEratosthenes
+, primesToQ
+, primesPE1
+, primesPE
+) where
 
-primesToG m = 2 : sieve [3,5..m]  where
-    sieve (p:xs)
-       | p*p > m   = p : xs
-       | otherwise = p : sieve (xs `minus` [p*p, p*p+2*p..])
+sieveOfEratosthenes :: [Integer]
+sieveOfEratosthenes = sieve [2..]
+  where
+    sieve (p:xs) = p : sieve [x|x <- xs, x `mod` p /= 0]
 
+primesToQ :: Integer -> [Integer]
+primesToQ m = eratos [2..m]  where
+   eratos []     = []
+   eratos (p:xs) = p : eratos (xs `minus` [p*p, p*p+p..m])
+
+primesPE1 ::  [Integer]
 primesPE1 = 2 : sieve [3..] primesPE1
   where
     sieve xs (p:ps) | q <- p*p , (h,t) <- span (< q) xs =
                    h ++ sieve (t `minus` [q, q+p..]) ps
 
+primesPE ::  [Integer]
 primesPE = 2 : primes'
   where
     primes' = sieve [3,5..] 9 primes'
@@ -19,17 +29,10 @@ primesPE = 2 : primes'
       | x < q     = x : sieve xs q ps
       | otherwise =     sieve (xs `minus` [q, q+2*p..]) (head t^2) t
 
--- ordered lists, difference and union
--- O(|x U y|)
+minus :: Ord a => [a] -> [a] -> [a]
 minus (x:xs) (y:ys) = case (compare x y) of
            LT -> x : minus  xs  (y:ys)
            EQ ->     minus  xs     ys
            GT ->     minus (x:xs)  ys
 minus  xs     _     = xs
-union (x:xs) (y:ys) = case (compare x y) of
-           LT -> x : union  xs  (y:ys)
-           EQ -> x : union  xs     ys
-           GT -> y : union (x:xs)  ys
-union  xs     []    = xs
-union  []     ys    = ys
 
