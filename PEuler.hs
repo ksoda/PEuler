@@ -12,7 +12,7 @@ rotate (x:xs) = xs ++ [x]
 
 eachCons :: Int -> [a] -> [[a]]
 eachCons n xs
-  |n - 1 == length xs = []
+  |n > length xs = []
   |otherwise = take n xs : eachCons n (tail xs)
 
 combination:: Integer->Integer->Integer
